@@ -1,0 +1,1 @@
+import{IsIn,IsOptional,IsString}from'class-validator';export class CreateReportDto{@IsIn(['USER','BUSINESS','REVIEW','INVOICE','SMS','OTHER'])targetType!:'USER'|'BUSINESS'|'REVIEW'|'INVOICE'|'SMS'|'OTHER';@IsOptional()@IsString()targetId?:string;@IsOptional()@IsString()businessId?:string;@IsString()category!:string;@IsString()description!:string}

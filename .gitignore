@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.next/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+backend/storage/
+backend/prisma/dev.db
+mobile/src-tauri/target/
+admin/.vite/
+website/.next/
+coverage/
+
+/.karban-console/

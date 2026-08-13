@@ -1,0 +1,1 @@
+import{Controller,Get,Param,Query}from'@nestjs/common';import{FeaturesService}from'./features.service';@Controller({path:'features',version:'1'})export class FeaturesController{constructor(private readonly s:FeaturesService){}@Get(':key')get(@Param('key')k:string,@Query('businessId')b?:string){return this.s.resolve(k,{businessId:b})}}

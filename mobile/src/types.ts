@@ -1,0 +1,4 @@
+export type BusinessCard={id:string;slug:string;name:string;bio:string|null;city:string|null;province:string|null;logoUrl:string|null;coverUrl:string|null;isAvailable:boolean;isVerified:boolean;averageRating:number;reviewsCount:number;distanceKm:number|null;businessType:{key:string;nameFa:string;iconKey:string}};
+export type Page<T>={items:T[];pageInfo:{hasNextPage:boolean;nextCursor:string|null}};
+export type InvoiceSummary={id:string;invoiceNo:string;status:string;totalRial:string|number;paidRial:string|number;createdAt:string;business:{name:string;slug:string;logoUrl:string|null};renders:Array<{id:string;format:'PDF'|'PNG';expiresAt:string}>};
+export type MineBusiness={id:string;slug:string;name:string;isVerified:boolean;isAvailable:boolean;logoUrl:string|null;businessType:{nameFa:string}};

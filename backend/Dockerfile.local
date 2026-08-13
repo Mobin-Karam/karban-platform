@@ -1,0 +1,38 @@
+# syntax=docker/dockerfile:1
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN apk add --no-cache \
+    chromium \
+    font-noto \
+    freetype \
+    harfbuzz \
+    nss \
+    openssl \
+    ttf-freefont
+
+COPY package*.json ./
+
+RUN npm config set registry https://registry.npmjs.org/ \
+ && npm config set fetch-retries 10 \
+ && npm config set fetch-retry-mintimeout 20000 \
+ && npm config set fetch-retry-maxtimeout 120000 \
+ && npm config set fetch-timeout 600000
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund
+
+COPY prisma ./prisma
+
+RUN npm run prisma:generate
+
+COPY . .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "dev"]

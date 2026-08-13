@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: konkur-api:${BUILD_ID:-local}
+    restart: unless-stopped
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      CONFIG_ENCRYPTION_KEY: ${CONFIG_ENCRYPTION_KEY:?CONFIG_ENCRYPTION_KEY is required}
+      CORS_ORIGINS: ${CORS_ORIGINS:?CORS_ORIGINS is required}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:?PUBLIC_API_URL is required}
+      PUBLIC_API_URLS: ${PUBLIC_API_URLS:-}
+      APP_TIME_ZONE: ${APP_TIME_ZONE:-Asia/Tehran}
+      STORAGE_ROOT: /app/storage
+      MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-50}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+      RUN_SEED: ${RUN_SEED:-false}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMe123!}
+      ADMIN_DISPLAY_NAME: ${ADMIN_DISPLAY_NAME:-Admin}
+    volumes:
+      - konkur_storage:/app/storage
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:4000/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  konkur_storage:

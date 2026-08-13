@@ -1,0 +1,1 @@
+export const fa=(v:number|string|bigint)=>new Intl.NumberFormat('fa-IR').format(typeof v==='string'?Number(v):v);export const rial=(v:number|string|bigint)=>`${fa(v)} ریال`;export const date=(v:string)=>new Intl.DateTimeFormat('fa-IR-u-ca-persian',{dateStyle:'medium',timeStyle:'short'}).format(new Date(v));

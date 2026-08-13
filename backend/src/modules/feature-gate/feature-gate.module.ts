@@ -1,0 +1,1 @@
+import{Module}from'@nestjs/common';import{FeatureGateGuard}from'../../common/feature-gate';import{FeaturesModule}from'../features/features.module';@Module({imports:[FeaturesModule],providers:[FeatureGateGuard],exports:[FeatureGateGuard,FeaturesModule]})export class FeatureGateModule{}

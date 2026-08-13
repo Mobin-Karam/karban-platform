@@ -1,0 +1,1 @@
+import{IsInt,IsOptional,IsString,Min}from'class-validator';export class WalletSpendDto{@IsInt()@Min(1)amountRial!:number;@IsString()referenceType!:string;@IsOptional()@IsString()referenceId?:string;@IsOptional()@IsString()description?:string} export class ClaimCoinDto{@IsString()grantId!:string}

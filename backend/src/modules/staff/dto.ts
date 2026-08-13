@@ -1,0 +1,1 @@
+import{IsIn,IsInt,IsOptional,IsString,Max,Min}from'class-validator';export class CreateStaffRequestDto{@IsString()phone!:string;@IsString()name!:string;@IsOptional()@IsInt()@Min(16)@Max(100)age?:number;@IsOptional()@IsString()imageUrl?:string;@IsOptional()@IsIn(['MANAGER','STAFF'])role?:'MANAGER'|'STAFF';@IsOptional()@IsString()title?:string;@IsOptional()@IsString()notes?:string}
