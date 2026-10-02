@@ -26,12 +26,12 @@ services:
       NODE_ENV: development
       PORT: 4000
       HOST: 0.0.0.0
-      DATABASE_URL: postgresql://postgres:un3njpNNBGagBA9p5Bjv@remote-fanhab.runflare.com:30492/datazyh_db
-      JWT_SECRET: change-me-development-only-at-least-32-characters
-      CONFIG_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-      PUBLIC_API_URL: http://localhost:4000
-      PUBLIC_API_URLS: http://localhost:4000
-      CORS_ORIGINS: http://localhost:5173,http://localhost:5174,http://localhost:3001,tauri://localhost,http://tauri.localhost,https://tauri.localhost
+      DATABASE_URL: ${DATABASE_URL:-postgresql://karban:karban_dev@postgres:5432/karban?schema=public}
+      JWT_SECRET: ${JWT_SECRET:-change-me-development-only-at-least-32-characters}
+      CONFIG_ENCRYPTION_KEY: ${CONFIG_ENCRYPTION_KEY:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:4000}
+      PUBLIC_API_URLS: ${PUBLIC_API_URLS:-http://localhost:4000}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:5174,http://localhost:3001,tauri://localhost,http://tauri.localhost,https://tauri.localhost}
       STORAGE_ROOT: /app/storage
       PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
       RUN_SEED: "false"
@@ -48,7 +48,7 @@ services:
     depends_on:
       - backend
     environment:
-      VITE_API_URL: http://localhost:4000/api/v1
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:4000/api/v1}
     ports:
       - "5174:5174"
 
@@ -59,8 +59,8 @@ services:
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_SITE_URL: http://192.168.1.103:3001
-      NEXT_PUBLIC_API_URL: http://192.168.1.103:4000/api/v1
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3001}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000/api/v1}
     ports:
       - "3001:3001"
 

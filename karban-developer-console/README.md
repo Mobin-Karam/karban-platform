@@ -1,23 +1,42 @@
 # Karban Developer Console
 
-A zero-required-dependency Bash control center for the Karban platform. It wraps the separate `backend/`, `mobile/`, `admin/`, and `website/` projects without turning them into a package-manager monorepo.
+The Karban Developer Console is a zero-required-dependency Bash control center for the platform. It wraps the separate `backend/`, `mobile/`, `admin/`, and `website/` projects without turning them into a package-manager monorepo.
 
-## One command
+Use it when you want one consistent entry point for local development, database work, diagnostics, builds, native-mobile operations, and release tasks.
 
-```bash
-karban
-```
+## Quick start
 
-or without installation:
+Run without installing:
 
 ```bash
 /path/to/karban-developer-console/karban
 ```
 
-Run it from the Karban platform root, or set:
+Or install it for the current user:
+
+```bash
+cd karban-developer-console
+chmod +x install.sh
+./install.sh
+```
+
+Make sure `~/.local/bin` is on `PATH`, then:
+
+```bash
+cd /path/to/karban-platform
+karban
+```
+
+If you launch the console outside the repository, set:
 
 ```bash
 export KARBAN_ROOT=/absolute/path/to/karban-platform
+```
+
+System-wide symlink installation is also available when appropriate:
+
+```bash
+sudo ./install.sh --system
 ```
 
 ## Main consoles
@@ -30,7 +49,7 @@ export KARBAN_ROOT=/absolute/path/to/karban-platform
 6. Mobile Android/iOS
 7. Marketing website
 8. Docker
-9. Integrations (API.ir OTP/CallOTP, SMS provider architecture, ZarinPal/payment providers)
+9. Integrations
 10. Storage and invoice rendering
 11. Testing and quality
 12. Builds and artifacts
@@ -38,26 +57,6 @@ export KARBAN_ROOT=/absolute/path/to/karban-platform
 14. Environment profiles
 15. Logs
 16. Diagnostics and support bundle
-
-## Install command
-
-```bash
-chmod +x install.sh
-./install.sh
-```
-
-Then make sure `~/.local/bin` is on `PATH` and run:
-
-```bash
-cd /path/to/karban-platform
-karban
-```
-
-System-wide symlink (requires permission):
-
-```bash
-sudo ./install.sh --system
-```
 
 ## Direct commands
 
@@ -84,88 +83,87 @@ karban selftest
 
 ## Database / Prisma capabilities
 
-- configure and mask `DATABASE_URL`
-- PostgreSQL connection testing
+- Configure and mask `DATABASE_URL`
+- Test PostgreSQL connectivity
 - Prisma validate / format / generate / Studio
-- migrate dev / create-only / status / deploy / resolve
-- db pull / db push
-- migration diff/drift preview
-- seed and development reset
-- PostgreSQL information, table sizes and connection overview
+- Migrate dev / create-only / status / deploy / resolve
+- `db pull` / `db push`
+- Migration diff and drift preview
+- Seed and protected development reset
+- PostgreSQL information, table-size, and connection views
 - `psql` shell and SQL-file execution
-- compressed `pg_dump` backups + SHA-256
-- protected restore workflow
-- local PostgreSQL Docker controls
-- backend typecheck/test/build through the bundled Prisma manager
+- Compressed `pg_dump` backups with SHA-256
+- Protected restore workflow
+- Local PostgreSQL Docker controls
+- Backend typecheck/test/build through the bundled Prisma manager
 
 ## Mobile capabilities
 
-Android:
+### Android
 
 - Tauri Android initialization
-- environment doctor
-- hot-reload development
-- debug/release APK builds
-- release AAB build for Google Play
+- Environment doctor
+- Hot-reload development
+- Debug/release APK builds
+- Release AAB build
 - APK manager
-- keystore generation/selection
+- Keystore generation/selection
 - zipalign/sign/verify
-- device selection and device information
-- emulator listing/start/cold boot/wipe
-- install/update/reinstall/uninstall
-- signature-conflict recovery
-- launch/stop/restart/clear data/open app settings
-- live app-focused logcat
-- screenshots and screen recording
-- deep-link testing for payment/invoice/notification routes
-- permission inspection/reset/settings
-- adb reverse + local API networking
-- manifest/version/package report
-- frontend/Rust quality gate
-- artifact discovery/checksums/release reports
+- Device selection and device information
+- Emulator listing/start/cold boot/wipe
+- Install/update/reinstall/uninstall
+- Signature-conflict recovery
+- Launch/stop/restart/clear data/open app settings
+- App-focused logcat
+- Screenshots and screen recording
+- Deep-link testing for payment/invoice/notification routes
+- Permission inspection/reset/settings
+- `adb reverse` + local API networking
+- Manifest/version/package report
+- Frontend/Rust quality gate
+- Artifact discovery, checksums, and release reports
 
-iOS on macOS:
+### iOS on macOS
 
 - Xcode/simulator doctor
-- Tauri iOS init
-- iOS dev
-- iOS build
-- list available simulators
-- open generated Xcode project
+- Tauri iOS initialization
+- iOS development/build flows
+- Simulator listing
+- Open generated Xcode project
 
-The original Tauri Android toolkit is retained under `tools/tauri-android-toolkit.sh` as the low-level signing/device/install engine.
+The original Tauri Android toolkit remains under `tools/tauri-android-toolkit.sh` as the low-level signing/device/install engine.
 
 ## Karban-specific diagnostics
 
-The project audit statically checks for modules corresponding to the platform requirements, including:
+The project audit statically checks for source corresponding to major platform requirements, including:
 
 - OTP / CallOTP
-- business onboarding and profiles
-- nearby/discovery marketplace
-- service catalog
-- invoice records + PDF/PNG rendering + 72-hour artifact expiry
-- inventory movements
-- reviews
+- Business onboarding and profiles
+- Nearby/discovery marketplace
+- Service catalog
+- Invoice records + PDF/PNG rendering + artifact expiry
+- Inventory movements
+- Reviews
 - ZarinPal/provider payments
-- customer/business wallets
-- loyalty coins/club mechanics
-- paid/moderated SMS
-- plans/limits
-- verification badge
-- staff requests
-- reports
-- feature flags
-- Jalali/Persian formatting
-- admin PWA update flow
+- Customer/business wallets
+- Loyalty coins/club mechanics
+- Paid/moderated SMS
+- Plans/limits
+- Verification badge
+- Staff requests
+- Reports
+- Feature flags
+- Persian/Jalali formatting foundations
+- Admin PWA update flow
 - eNamad embed
 
-This is a static presence scan, not proof that a feature passes runtime tests.
+A static presence scan is useful for catching missing product areas, but it is **not proof that a feature passes runtime tests**.
 
 ## Security model
 
-The console never intentionally persists provider credentials. Project runtime provider credentials remain controlled by the application/admin backend. The console only reads bootstrap environment state for diagnostics and masks sensitive values.
+The console does not intentionally persist provider credentials. Runtime provider secrets stay controlled by the application/admin backend. The console reads bootstrap environment state for diagnostics and masks sensitive values.
 
-Generated console state lives in:
+Generated console state lives under:
 
 ```text
 <karban-platform>/.karban-console/
@@ -175,6 +173,17 @@ Generated console state lives in:
   backups/
 ```
 
-The folder is added to `.gitignore` automatically.
+The project ignores this directory.
 
-See `docs/SECURITY.md` for details.
+Read [`docs/SECURITY.md`](docs/SECURITY.md) before using backup, restore, signing, or environment-management workflows.
+
+## More documentation
+
+- [Installation](docs/INSTALLATION.md)
+- [Commands](docs/COMMANDS.md)
+- [Database workflows](docs/DATABASE.md)
+- [Mobile tooling](docs/MOBILE.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Security](docs/SECURITY.md)
+- [Troubleshooting](docs/TROUBLESHOOTING.md)
+- [Extending the console](docs/EXTENDING.md)
