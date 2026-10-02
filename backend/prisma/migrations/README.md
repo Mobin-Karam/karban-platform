@@ -1,16 +1,36 @@
 # Prisma migrations
 
-The source schema and seed are included, but an initial migration SQL file is **not fabricated** in this package because the packaging environment could not download/run the Prisma CLI.
+The repository now includes the initial PostgreSQL migration under:
 
-On the first networked development machine, create and review the initial migration:
+```text
+backend/prisma/migrations/20260811173844_start/
+```
+
+## First local bootstrap
 
 ```bash
 cd backend
 npm ci
 npx prisma generate
 npx prisma validate
-npx prisma migrate dev --name init
+npm run prisma:deploy
 npm run prisma:seed
 ```
 
-Commit the generated `prisma/migrations/<timestamp>_init/` directory before deployment. Production should use `npm run prisma:deploy`, never `migrate dev`.
+For normal schema development, edit `prisma/schema.prisma` and create a reviewed migration:
+
+```bash
+npm run prisma:migrate -- --name describe_the_change
+```
+
+Commit both the schema change and generated migration.
+
+## Production
+
+Production environments should apply committed migrations with:
+
+```bash
+npm run prisma:deploy
+```
+
+Do not use `prisma migrate dev` as the production deployment mechanism.
