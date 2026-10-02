@@ -1,51 +1,32 @@
-# Build and configuration audit
+# Build and verification notes
 
-Audit date: 2026-08-11
+This file separates **historical packaging checks** from checks that still need to be run on a fully provisioned development/CI machine.
 
-## Passed in the packaging environment
+## Historical packaging audit
 
-The repository includes `node scripts/audit.mjs` so these checks are reproducible.
+The recorded packaging audit was performed on **2026-08-11**. At that time the environment could not resolve `registry.npmjs.org` and did not contain a Rust toolchain, so dependency-backed application builds and native Tauri builds were not claimed as passing.
 
-- 17 JSON/manifest/config files parsed successfully.
-- 160 TypeScript/TSX source files passed TypeScript transpile/syntax parsing.
-- 437 relative imports were resolved to local source files.
-- 18 required brand/PWA/Tauri assets were present.
-- `docker-compose.yml` parsed successfully and contains only `postgres` and `backend`; Redis is not present.
-- Mobile source scan found no persisted bearer access token in `localStorage` or `sessionStorage`.
-- Tauri/PWA/brand icon files were generated and included.
-- Backend bootstrap validation requires PostgreSQL, a JWT secret of at least 32 characters, and a 64-hex-character AES-256 configuration encryption key.
-- Docker runtime explicitly installs Chromium for Puppeteer invoice PDF/PNG rendering.
-- Payment callback, wallet mutations, SMS dispatch, loyalty grant/claim paths contain database-level idempotency/concurrency guards.
+The repository has changed since that snapshot. In particular:
 
-## Checks that could not honestly be executed here
+- An initial Prisma migration is now committed under `backend/prisma/migrations/20260811173844_start/`.
+- The root Compose workspace now includes PostgreSQL, backend, admin, and website services.
+- Public repository documentation has been refreshed.
 
-The environment cannot currently resolve `registry.npmjs.org` (`EAI_AGAIN`) and contains no application `node_modules`. Rust/Cargo are also not installed. Therefore the following are **not claimed as passed**:
+For that reason, do not treat the old packaging snapshot as a current CI result.
 
-- `npm ci` / dependency resolution
-- Prisma client generation / `prisma validate`
-- semantic TypeScript type-checks against installed library types
-- Nest/Vite/Next production builds
-- Jest execution
-- native Tauri Android/iOS builds
+## Source-level audit tooling
 
-The installed host tools observed during packaging were Node.js 22.16.0, npm 10.9.2 and Java 21.0.11.
-
-## Prisma migration status
-
-`backend/prisma/schema.prisma` and the seed are included. The initial migration SQL is intentionally not fabricated because Prisma CLI could not be installed/executed in this environment. On the first networked development machine:
+The repository includes:
 
 ```bash
-cd backend
-npm ci
-npx prisma generate
-npx prisma validate
-npx prisma migrate dev --name init
-npm run prisma:seed
+node scripts/audit.mjs
 ```
 
-Review and commit the generated `prisma/migrations/<timestamp>_init/` directory. Production deployments should use `npm run prisma:deploy`.
+The audit scripts are intended to catch configuration, local-import, manifest, source-presence, and asset problems without replacing real builds/tests.
 
-## Full validation commands
+## Recommended full validation
+
+Run these commands on a networked development or CI machine:
 
 ```bash
 node scripts/audit.mjs
@@ -76,4 +57,31 @@ npm run typecheck
 npm run build
 ```
 
-Do not deploy until those dependency-backed checks pass on a networked development/CI machine.
+## Database migration checks
+
+The current repository includes an initial migration. Validate it against a disposable PostgreSQL database before production:
+
+```bash
+cd backend
+npm ci
+npx prisma generate
+npx prisma validate
+npm run prisma:deploy
+npm run prisma:seed
+```
+
+For production deployments, apply committed migrations with `npm run prisma:deploy`; do not generate migrations on the production host.
+
+## Production gate
+
+Do not deploy solely because source-level audits pass. A production gate should also cover:
+
+- Dependency and lockfile review
+- Runtime/unit/integration tests
+- API/provider sandbox validation
+- Native build/signing checks where applicable
+- Database backup and restore test
+- Secret and configuration review
+- Storage permissions and cleanup behavior
+- Monitoring/logging/alerting
+- Current Iranian payment, tax, privacy, marketplace, and e-commerce compliance requirements
